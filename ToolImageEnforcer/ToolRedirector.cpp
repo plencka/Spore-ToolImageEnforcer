@@ -5,11 +5,17 @@ ToolRedirectorPtr ToolRedirector::instance;
 
 void ToolRedirector::LoadManager()
 {
+#ifdef _DEBUG
+	CheatManager.AddCheat("TIEGiveTool", new ToolRedirectDebugCheat());
+#endif
 	instance = new ToolRedirector();
 }
 
 void ToolRedirector::Unload()
 {
+#ifdef _DEBUG
+	CheatManager.RemoveCheat("TIEGiveTool");
+#endif
 	instance = nullptr;
 }
 
@@ -54,7 +60,7 @@ void ToolRedirector::ReadModdedPNGs()
 void ToolRedirector::CreateWindows()
 {
 	mainWindow = new UTFWin::Window();
-	mainWindow->SetControlID(id("ToolEnfoncer_Control"));
+	mainWindow->SetControlID(id("ToolEnforcer_Control"));
 	WindowManager.GetMainWindow()->AddWindow(mainWindow);
 	for (auto& key : filteredKeys) {
 		auto win = UTFWin::IImageDrawable::AddImageWindow({ key.instanceID, TypeIDs::png, key.groupID }, 0, 0, mainWindow);

@@ -47,11 +47,10 @@ public:
 		auto args = line.GetArgumentsRange(&numArgs, 1, 2);
 		if (Simulator::IsSpaceGame()) {
 			cSpaceToolDataPtr tool;
-			if (!SimulatorSpaceGame.GetPlayerInventory()->GetUnlockableTool({ id(args[0]), 0, 0 })) {
+			if (!ToolManager.LoadTool({ id(args[0]), 0, 0 }, tool)) {
 				App::ConsolePrintF("Tool does not exists.");
 				return;
 			}
-			ToolManager.LoadTool({ id(args[0]), 0, 0 }, tool);
 			if (numArgs == 2) {
 				tool->mCurrentAmmoCount = mpFormatParser->ParseInt(args[1]);
 			}

@@ -1,5 +1,5 @@
 # Spore-ToolImageEnforcer
-A small [Mod API](https://github.com/emd4600/Spore-ModAPI) mod for Spore, allowing Space Stage Tools to have custom icons.
+A small [ModAPI](https://github.com/emd4600/Spore-ModAPI) mod for Spore, allowing Space Stage Tools to have custom icons.
 
 ## About
 This modification does nothing visible to the end user by itself, but it enables mod developers to use custom icons in the Toolbar in Space Stage.

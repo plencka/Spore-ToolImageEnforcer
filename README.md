@@ -4,7 +4,7 @@ A small [Mod API](https://github.com/emd4600/Spore-ModAPI) mod for Spore, allowi
 ## About
 This modification does nothing visible to the end user by itself, but it enables mod developers to use custom icons in the Toolbar in Space Stage.
 Spore by default preloads all the tool icons from one `.spui` interface file, which cannot be modified without breaking mod compability.
-This mod reads all additional images added to the `0x3064cb38` (aliased as ufotools~ in [SporemodderFX](https://github.com/emd4600/SporeModder-FX)) folder and alters Spore's Window search function to include new icons.
+This mod reads all additional images added to the `0x3064cb38` (aliased as `ufotools~` in [SporemodderFX](https://github.com/emd4600/SporeModder-FX)) folder and alters Spore's Window search function to include new icons.
 
 ## In practice:
 __Default game behaviour:__

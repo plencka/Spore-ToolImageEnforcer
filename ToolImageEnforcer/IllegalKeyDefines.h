@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 
-// Generated with Regular Expression formatting.
+// Generated with Regular Expression formatting from ufotools~ folder.
 
 /// List of all keys located in 0x3064cb38 folder that shouldn't be used in generation of new windows.
 /// No reason to create windows for these, because game already recognizes them.

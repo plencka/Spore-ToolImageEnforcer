@@ -1,6 +1,5 @@
 // dllmain.cpp : Defines the entry point for the DLL application.
 #include "stdafx.h"
-#include <Spore/App/cGameModeManager.h>
 #include "ToolRedirector.h"
 
 void Initialize()
@@ -13,44 +12,25 @@ void Dispose()
 	ToolRedirector::Unload();
 }
 
-member_detour(FindWindowByID_detour, UTFWin::UILayout, UTFWin::IWindow* (uint32_t, bool)) {
-	UTFWin::IWindow* detoured(uint32_t controlID,
-		bool bRecursive) {
-		if (this->mResourceKey.instanceID == 0x46fed9c8) { // InstanceID of layout used to create icons in inventory
-			if (auto redirectInstance = ToolRedirector::GetInstance()) {
-				if (auto iconWindow = redirectInstance->TryFindingWindowID(controlID)) {
-					return iconWindow;
-				}
+member_detour(LoadSPUI_detour, UTFWin::UILayout, bool (const ResourceKey&, bool, uint32_t)) {
+	bool detoured(const ResourceKey & resourceKey, bool unkBool, uint32_t unkParams) {
+		bool result = original_function(this, resourceKey, unkBool, unkParams);
+		if (resourceKey.instanceID == 0x46fed9c8) {
+			intrusive_ptr<UTFWin::UILayout> layout = this;
+			auto firstIcon = layout->FindWindowByID(0xC19CCD88); // First icon from spui. Should be the fastest to access.
+			if (intrusive_ptr<ToolRedirector> toolRedirectorInstance = ToolRedirector::GetInstance()) {
+				toolRedirectorInstance->InjectIconWindows(firstIcon); // Icons should be destroyed with hierarchy
 			}
 		}
-		return original_function(this, controlID,
-				bRecursive);
-	}
-};
 
-// This could be avoided by loading windows directly into window of 0x46fed9c8.spui!
-member_detour(GameModeEnter_detour, App::cGameModeManager, bool(const char*)) {
-	bool detoured(const char* pName) {
-		if (strcmp(pName, "Game_Space") == 0) {
-			if (auto redirectInstance = ToolRedirector::GetInstance()) {
-					redirectInstance->CreateWindows();
-			}
-		}
-		else {
-			if (auto redirectInstance = ToolRedirector::GetInstance()) {
-				redirectInstance->DestroyWindows();
-			}
-		}
-		return original_function(this, pName);
+		return result;
 	}
 };
 
 void AttachDetours()
 {
-	FindWindowByID_detour::attach(GetAddress(UTFWin::UILayout, FindWindowByID));
-	GameModeEnter_detour::attach(GetAddress(App::cGameModeManager, SetActiveModeByName));
+	LoadSPUI_detour::attach(GetAddress(UTFWin::UILayout, Load));
 }
-
 
 // Generally, you don't need to touch any code here
 BOOL APIENTRY DllMain( HMODULE hModule,
@@ -76,4 +56,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	return TRUE;
 }
-

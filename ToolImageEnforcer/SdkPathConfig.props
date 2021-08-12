@@ -3,7 +3,7 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros">
     <SporeSdkPath>C:\Users\bubble\source\repos\Spore-ModAPI\</SporeSdkPath>
-    <SporeLauncherPath>C:\ProgramData\SporeModManagerStorage\</SporeLauncherPath>
+    <SporeLauncherPath>D:\SporeModManagerStorage\</SporeLauncherPath>
   </PropertyGroup>
   <PropertyGroup />
   <ItemDefinitionGroup />

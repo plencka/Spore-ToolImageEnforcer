@@ -3,19 +3,22 @@
 
 ToolRedirectorPtr ToolRedirector::instance;
 
+ToolRedirector::ToolRedirector()
+{
+	ReadModdedPNGs();
+}
+
+ToolRedirector::~ToolRedirector()
+{
+}
+
 void ToolRedirector::LoadManager()
 {
-#ifdef _DEBUG
-	CheatManager.AddCheat("TIEGiveTool", new ToolRedirectDebugCheat());
-#endif
 	instance = new ToolRedirector();
 }
 
 void ToolRedirector::Unload()
 {
-#ifdef _DEBUG
-	CheatManager.RemoveCheat("TIEGiveTool");
-#endif
 	instance = nullptr;
 }
 
@@ -24,67 +27,45 @@ ToolRedirectorPtr ToolRedirector::GetInstance()
 	return instance;
 }
 
-ToolRedirector::ToolRedirector()
+bool ToolRedirector::IsIllegalID(uint32_t id)
 {
-	ReadModdedPNGs();
-}
+	for (uint32_t illegalToolImageID : illegalToolImageIDs) {
+		if (id == illegalToolImageID) {
+			return true;
+		}
+	}
 
-
-ToolRedirector::~ToolRedirector()
-{
-	DestroyWindows();
+	return false;
 }
 
 void ToolRedirector::ReadModdedPNGs()
 {
-	eastl::vector<ResourceKey> keys;
+	eastl::vector<ResourceKey> toolIconKeys;
 	auto filter = new StandardFileFilter(ResourceKey::kWildcardID,
-		0x3064CB38,
-		0x2F7D0004,
-		ResourceKey::kWildcardID); //ufotools~, png
+		0x3064CB38, //ufotools~
+		TypeIDs::png,
+		ResourceKey::kWildcardID);
 
-	ResourceManager.GetFileKeys(keys, filter);
-	for (auto& key : keys) { // Inefficient, but only ran once per runtime
-		bool isIllegal = false;
-		for (auto illegalToolImageID : illegalToolImageIDs) {
-			if (key.instanceID == illegalToolImageID) {
-				isIllegal = true;
-			}
-		}
-		if (!isIllegal) {
-			filteredKeys.push_back(key);
+	ResourceManager.GetFileKeys(toolIconKeys, filter);
+	for (const ResourceKey& toolIconKey : toolIconKeys) {
+		if (!IsIllegalID(toolIconKey.instanceID)) {
+			filteredKeys.push_back(toolIconKey);
 		}
 	}
 }
 
-void ToolRedirector::CreateWindows()
+void ToolRedirector::InjectIconWindows(UTFWin::IWindow* window)
 {
-	mainWindow = new UTFWin::Window();
-	mainWindow->SetControlID(id("ToolEnforcer_Control"));
-	WindowManager.GetMainWindow()->AddWindow(mainWindow);
-	for (auto& key : filteredKeys) {
-		auto win = UTFWin::IImageDrawable::AddImageWindow({ key.instanceID, TypeIDs::png, key.groupID }, 0, 0, mainWindow);
-		win->SetControlID(key.instanceID);
-		win->SetFillColor(Color(255, 255, 255, 0));
-		win->SetArea({ 0, 0, 300, 300 });
-		win->SetFlag(UTFWin::kWinFlagVisible, false);
-	}
-}
+	for (const ResourceKey& toolIconKey : filteredKeys) {
+		intrusive_ptr<UTFWin::IWindow> iconWindow = UTFWin::IImageDrawable::AddImageWindow(
+			{ toolIconKey.instanceID, TypeIDs::png, toolIconKey.groupID },
+			0, 0, window);
 
-void ToolRedirector::DestroyWindows()
-{
-	if (mainWindow) {
-		WindowManager.GetMainWindow()->DisposeWindowFamily(mainWindow);
-		mainWindow = nullptr;
+		iconWindow->SetControlID(toolIconKey.instanceID);
+		iconWindow->SetFillColor(Color(255, 255, 255, 0));
+		iconWindow->SetArea({ 0, 0, 300, 300 });
+		iconWindow->SetFlag(UTFWin::kWinFlagVisible, false);
 	}
-}
-
-UTFWin::IWindow* ToolRedirector::TryFindingWindowID(uint32_t controlID)
-{
-	if (mainWindow) {
-		return mainWindow->FindWindowByID(controlID, true);
-	}
-	return nullptr;
 }
 
 // For internal use, do not modify.

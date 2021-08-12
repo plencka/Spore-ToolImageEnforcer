@@ -32,7 +32,6 @@ void AttachDetours()
 	LoadSPUI_detour::attach(GetAddress(UTFWin::UILayout, Load));
 }
 
-
 // Generally, you don't need to touch any code here
 BOOL APIENTRY DllMain( HMODULE hModule,
                        DWORD  ul_reason_for_call,
@@ -57,4 +56,3 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 	}
 	return TRUE;
 }
-

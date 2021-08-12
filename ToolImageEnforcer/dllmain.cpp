@@ -28,7 +28,7 @@ member_detour(FindWindowByID_detour, UTFWin::UILayout, UTFWin::IWindow* (uint32_
 	}
 };
 
-
+// This could be avoided by loading windows directly into window of 0x46fed9c8.spui!
 member_detour(GameModeEnter_detour, App::cGameModeManager, bool(const char*)) {
 	bool detoured(const char* pName) {
 		if (strcmp(pName, "Game_Space") == 0) {
@@ -36,11 +36,11 @@ member_detour(GameModeEnter_detour, App::cGameModeManager, bool(const char*)) {
 					redirectInstance->CreateWindows();
 			}
 		}
-		/*else { // This might be done by the parent window managed by the base game! Also conflicts with gameMode change cheats!
+		else {
 			if (auto redirectInstance = ToolRedirector::GetInstance()) {
 				redirectInstance->DestroyWindows();
 			}
-		}*/
+		}
 		return original_function(this, pName);
 	}
 };

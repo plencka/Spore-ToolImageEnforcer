@@ -1,3 +1,10 @@
+________________________________________________________________________________________________________________________________________________
+# DEPRECATED
+## Spore-ToolImageEnforcer is now integrated with ModAPI.
+Improved version of this mod is now part of the core DLLs.
+
+________________________________________________________________________________________________________________________________________________
+Old OP for achival purposes:
 # Spore-ToolImageEnforcer
 A small [ModAPI](https://github.com/emd4600/Spore-ModAPI) mod for Spore, allowing Space Stage Tools to have custom icons.
 
@@ -16,7 +23,13 @@ __With this modification:__
 ![mainWindowImage](./resources/exampleWith.PNG?raw=true)
 
 ### How to use:
-If you're mod developer and want to use custom icons, simply add your `.png` images into `0x3064cb38 (ufotools~)` folder and use their `ResourceKey` in `spaceToolImageID` property.
+If you're a mod developer and want to use custom icons, simply add your `.png` images into `0x3064cb38 (ufotools~)` folder and use their `ResourceKey` in `spaceToolImageID` property.
 
 ## Attention!
 _Compilations available here are intended for mod developers. Build for general audiences hasn't been released yet._
+
+________________________________________________________________________________________________________________________________________________
+# DEPRECATED
+## Spore-ToolImageEnforcer is now integrated with ModAPI.
+
+________________________________________________________________________________________________________________________________________________
